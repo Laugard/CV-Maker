@@ -18,6 +18,22 @@ if (isset($_POST['id'])) {
     $cv = $cvModel->getById($_POST['id'], $_SESSION['user_id']);
 } else {
     $cv = $_POST;
+
+    // Håndter upload af profilbillede
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0) {
+        $uploadDir = dirname(__DIR__) . '/public/uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
+
+        $filename = uniqid() . '_' . basename($_FILES['profile_picture']['name']);
+        $targetPath = $uploadDir . $filename;
+
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $targetPath)) {
+            $cv['profile_picture'] = 'uploads/' . $filename;
+        }
+    }
+
     $cvModel->save($cv, $_SESSION['user_id']);
 }
 

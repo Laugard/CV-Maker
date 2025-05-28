@@ -7,15 +7,23 @@ class Cv {
     }
 
     public function save($data, $userId) {
-        $stmt = $this->pdo->prepare("INSERT INTO cvs (user_id, name, email, phone, summary, experience, education, template)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("
+        INSERT INTO cvs (user_id, name, email, phone, summary, experience, education, template, profile_picture)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
         return $stmt->execute([
             $userId,
-            $data['name'], $data['email'], $data['phone'],
-            $data['summary'], $data['experience'], $data['education'],
-            $data['template']
+            $data['name'],
+            $data['email'],
+            $data['phone'],
+            $data['summary'],
+            $data['experience'],
+            $data['education'],
+            $data['template'],
+            isset($data['profile_picture']) ? $data['profile_picture'] : null
         ]);
     }
+
 
     public function getAllByUser($userId) {
         $stmt = $this->pdo->prepare("SELECT * FROM cvs WHERE user_id = ?");
